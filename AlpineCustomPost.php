@@ -23,14 +23,15 @@ class AlpineCustomPost
      *
      * @var array $post_label Holds the name of the post type.
      */
-    public $post_label;
+    public $post_labels;
      /**
      * Post argument option.
      *
      * @var array $post_args Holds the name of the post type.
      */
     public $post_args;
-        /**
+
+    /**
      * Constructor
      *
      * Register a custom post type.
@@ -43,9 +44,9 @@ class AlpineCustomPost
     {
 
         // Set some important variables
-        $this->post_type_name   = strtolower(str_replace(' ', '_', $name));
-        $this->post_type_args   = $args;
-        $this->post_type_labels = $labels;
+        $this->post_type   = strtolower(str_replace(' ', '_', $name));
+        $this->post_args   = $args;
+        $this->post_labels = $labels;
  
         add_action("init", array(&$this, 'register_post_type'));
 
@@ -60,7 +61,7 @@ class AlpineCustomPost
     public function register_post_type()
     {
 
-        $name       = ucwords(str_replace('_', ' ', $this->post_type_name));
+        $name       = ucwords(str_replace('_', ' ', $this->post_type));
         $plural     = $name . 's';
         $labels = array_merge(
             [
@@ -78,7 +79,7 @@ class AlpineCustomPost
                 'parent_item_colon'     => '',
                 'menu_name'             => $plural
             ],
-            $this->post_type_labels
+            $this->post_labels
         );
         $args = array_merge(
             [
@@ -91,26 +92,28 @@ class AlpineCustomPost
                 '_builtin'              => false,
             ],
 
-            $this->post_type_args
+            $this->post_args
         );
-        register_post_type($this->post_type_name, $args);
+        register_post_type($this->post_type, $args);
     }
+
     /**
      * add_taxonomy
      *
-     * add_taxonomy with registeredf custom post
+     * add_taxonomy with registered custom post
      * @param mixed $name The name(s) of the post type, accepts (post type name, slug, plural, singular).
      * @param array $args User submitted options (optional).
      * @param array $labels User submitted options (optional).
-     * 
+     *
      * @return void
+     * @throws Exception
      */
 
     public function add_taxonomy($name, $args = [], $labels = [])
     {
         if (!empty($name)) {
             // We need to know the post type name, so the new taxonomy can be attached to it.
-            $post_type_name = $this->post_type_name;
+            $post_type_name = $this->post_type;
 
             // Taxonomy properties
             $taxonomy_name      = strtolower(str_replace(' ', '_', $name));
@@ -118,7 +121,7 @@ class AlpineCustomPost
             $taxonomy_args      = $args;
 
             if (!taxonomy_exists($taxonomy_name)) {
-                //Capitilize the words and make it plural
+                //Capitalize the words and make it plural
                 $name       = ucwords(str_replace('_', ' ', $name));
                 $plural     = $name . 's';
 
@@ -175,4 +178,47 @@ class AlpineCustomPost
             }
         }
     }
+
+    /**
+     *  Add Column
+     *
+     *  add_column with registered post type
+     * @param int $name name of the column
+     * @param callable $column_value the call back function
+     * @param bool $sortable (optional) sortable column
+     * @param callable $sortable_query (optional) sortable column
+     *
+     * @return void
+     */
+
+    public function add_column($name, $column_value, $sortable = false, $sortable_query = null) {
+
+        $name = strtolower(str_replace(' ', '_', $name));
+
+        // registered column
+        add_filter( "manage_{$this->post_type}_posts_columns", function($columns) use ($name) {
+
+            $columns[$name] = __(ucfirst($name));
+            return  $columns;
+        });
+
+        // show value of custom column
+        add_action( "manage_{$this->post_type}_posts_custom_column", $column_value, 10, 2);
+
+        // set sort option
+        if ($sortable)
+        {
+            add_filter( "manage_edit-{$this->post_type}_sortable_columns", function($columns) use ($name) {
+                $columns[$name] = "{$this->post_type}_{$name}_sort";
+                return $columns;
+            });
+
+            // custom query for sort
+            if ($sortable_query)
+            {
+                add_action('pre_get_posts', $sortable_query);
+            }
+        }
+    }
+
 }
