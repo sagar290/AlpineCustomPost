@@ -1,4 +1,4 @@
-#Alpine Custom Post Class
+# Alpine Custom Post Class
 
 This class helps you to make custom post type within a second. 
 No need to worry about all those wordpress api functions for registered custom post, just give the 
