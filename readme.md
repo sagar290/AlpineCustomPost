@@ -68,4 +68,4 @@ I made this class for my personal project. You can use this as well for your per
 
 ## Last but not least 
 As I am a noob developer, its normal to make mistake.
-please feel free raise issue if any problem happen and also ** contribution which is highly welcome **.
+please feel free raise issue if any problem happen and also **contribution which is highly welcome**.
