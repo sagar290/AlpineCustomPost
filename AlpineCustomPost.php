@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Custom Post Type Class
  *
@@ -10,6 +11,7 @@
  * @version 1.0
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  */
+
 class AlpineCustomPost
 {
     /**
@@ -24,7 +26,7 @@ class AlpineCustomPost
      * @var array $post_label Holds the name of the post type.
      */
     public $post_labels;
-     /**
+    /**
      * Post argument option.
      *
      * @var array $post_args Holds the name of the post type.
@@ -47,9 +49,8 @@ class AlpineCustomPost
         $this->post_type   = strtolower(str_replace(' ', '_', $name));
         $this->post_args   = $args;
         $this->post_labels = $labels;
- 
-        add_action("init", array(&$this, 'register_post_type'));
 
+        add_action("init", array(&$this, 'register_post_type'));
     }
     /**
      * register_post_type
@@ -191,34 +192,74 @@ class AlpineCustomPost
      * @return void
      */
 
-    public function add_column($name, $column_value, $sortable = false, $sortable_query = null) {
+    public function add_column($name, $column_value, $sortable = false, $sortable_query = null)
+    {
 
         $name = strtolower(str_replace(' ', '_', $name));
 
         // registered column
-        add_filter( "manage_{$this->post_type}_posts_columns", function($columns) use ($name) {
+        add_filter("manage_{$this->post_type}_posts_columns", function ($columns) use ($name) {
 
             $columns[$name] = __(ucfirst($name));
             return  $columns;
         });
 
         // show value of custom column
-        add_action( "manage_{$this->post_type}_posts_custom_column", $column_value, 10, 2);
+        add_action("manage_{$this->post_type}_posts_custom_column", $column_value, 10, 2);
 
         // set sort option
-        if ($sortable)
-        {
-            add_filter( "manage_edit-{$this->post_type}_sortable_columns", function($columns) use ($name) {
+        if ($sortable) {
+            add_filter("manage_edit-{$this->post_type}_sortable_columns", function ($columns) use ($name) {
                 $columns[$name] = "{$this->post_type}_{$name}_sort";
                 return $columns;
             });
 
             // custom query for sort
-            if ($sortable_query)
-            {
+            if ($sortable_query) {
                 add_action('pre_get_posts', $sortable_query);
             }
         }
     }
 
+    /**
+     *  Enable gutenberg
+     *
+     *  enable or disable gutenberg with registered post type
+     *
+     * @return void
+     */
+    public function gutenberg($status = true)
+    {
+        if (!$status) {
+            // calling disable functions  
+            $this->disableGutenberg();
+            $this->disableGutenbergBlock();
+        }
+        return $status;
+    }
+
+    /**
+     *  Disable Gutenberg
+     *
+     * @return void
+     */
+
+    public function disableGutenberg() {
+        add_filter( 'gutenberg_can_edit_post_type', function($can_edit, $current_type) {
+            $enable_gutenberg = false;
+            return $this->post_type === $current_type ? $enable_gutenberg : $can_edit;
+        }, 10, 2 );
+        return false;
+    }
+
+    /**
+     *  Disable Gutenberg Block
+     *
+     * @return void
+     */
+    public function disableGutenbergBlock()
+    {
+        // Enable Gutenberg ?
+        add_filter('use_block_editor_for_post_type', array($this, 'disableGutenberg'), 10, 2);
+    }
 }
