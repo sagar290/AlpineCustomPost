@@ -64,7 +64,12 @@ if (!class_exists('AlpineCustomPost')) {
         public function register_post_type()
         {
 
-            $name       = ucwords(str_replace('_', ' ', $this->post_type));
+            $name = ucwords(str_replace('_', ' ', $this->post_type));
+
+            if (array_key_exists('name', $this->post_labels)) {
+                $name = $this->post_labels['name'];
+            }
+
             $plural     = $name . 's';
             $labels = array_merge(
                 [
