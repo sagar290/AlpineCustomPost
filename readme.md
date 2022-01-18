@@ -13,7 +13,7 @@ And see the result :smiley:
 ## Installation
 
 ````
-    composer require sagar290/alpine-custom-post 
+    composer require sagar290/alpine-custom-post:dev-master 
 ````
 
 ## Documentation
