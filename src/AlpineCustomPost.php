@@ -48,7 +48,7 @@ if (!class_exists('AlpineCustomPost')) {
         {
 
             // Set some important variables
-            $this->post_type   = strtolower(str_replace(' ', '_', $name));
+            $this->post_type   =  array_key_exists('post_type', $labels) ? $labels['post_type'] : strtolower(str_replace(' ', '_', $name));
             $this->post_args   = $args;
             $this->post_labels = $labels;
 
