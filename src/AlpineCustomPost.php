@@ -36,6 +36,13 @@ if (!class_exists('AlpineCustomPost')) {
         public $post_args;
 
         /**
+         * Post argument name.
+         *
+         * @var string $name Holds the name of the post type.
+         */
+        private $name;
+
+        /**
          * Constructor
          *
          * Register a custom post type.
@@ -46,6 +53,8 @@ if (!class_exists('AlpineCustomPost')) {
          */
         public function __construct($name, $args = [], $labels = [])
         {
+
+            $this->name = $name;
 
             // Set some important variables
             $this->post_type   =  array_key_exists('post_type', $labels) ? $labels['post_type'] : strtolower(str_replace(' ', '_', $name));
@@ -64,12 +73,7 @@ if (!class_exists('AlpineCustomPost')) {
         public function register_post_type()
         {
 
-            $name = ucwords(str_replace('_', ' ', $this->post_type));
-
-            if (array_key_exists('name', $this->post_labels)) {
-                $name = $this->post_labels['name'];
-            }
-
+            $name = $this->name;
             $plural     = $name . 's';
             $labels = array_merge(
                 [
