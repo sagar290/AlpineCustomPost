@@ -10,12 +10,17 @@ name of your post type and **BOOM**!
 ```
 And see the result :smiley:
 
+## Installation
+
+````
+    composer require sagar290/alpine-custom-post 
+````
+
 ## Documentation
  
 #### Basic
 
 ```php
-
     $book = new AlpineCustomPost("book");
 ``` 
 #### With Custom Labels and Argument
