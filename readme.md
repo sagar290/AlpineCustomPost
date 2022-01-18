@@ -21,6 +21,8 @@ And see the result :smiley:
 #### Basic
 
 ```php
+    namespace Sagar290\CustomPost\AlpineCustomPost;
+    
     $book = new AlpineCustomPost("book");
 ``` 
 #### With Custom Labels and Argument
