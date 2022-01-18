@@ -1,0 +1,19 @@
+{
+    "name": "sagar290/alpine-custom-post",
+    "description": "This library is useful for creating wordpress custom posttype very easily and effeciently.",
+    "license": "GPLv2",
+    "autoload": {
+        "psr-4": {
+            "Sagar290\\AlpineCustomPost\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "sagar",
+            "email": "sagar.dash290@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2|8.0"
+    }
+}
